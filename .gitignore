@@ -1,0 +1,9 @@
+/unpackage/dist/*
+/unpackage/cache/*
+/unpackage/release/*
+/node_modules/*
+/.vscode/*
+/dist/
+/.hbuilderx/
+/*-lock.*
+/stats.html

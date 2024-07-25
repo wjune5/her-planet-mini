@@ -83,58 +83,61 @@
             ></tm-text>
           </template>
         </tm-divider>
-        <view class="flex flex-row flex-row-center-between mb-24">
-          <tm-text label="评论信息" :font-size="32" _class="font-bold"></tm-text>
-        </view>
-        <!-- comment -->
-        <tm-virtual-list
-          :load="getdata"
-          :width="_widthRpx"
-          :height="sysinfo.height - 44"
-          :data="dataList"
-          :itemHeight="300"
-        >
-          <template v-slot:default="{ data }">
-            <view v-for="(item, index) in data" :key="index">
-              <tm-comment
-                :margin="[0]"
-                :author="item.createUser.name"
-                :avatar="item.createUser.avatar"
-                :time="item.createTime"
-                :content="item.content"
-                @content-click="replyTo(item.id, item.createUser)"
-                @content-long-click="showCommentOperation(item)"
-                @author-click="goUser"
-                @avatar-click="goUser"
-              >
-                <template v-slot:time>
-                  <tm-tag
-                    text
-                    size="xs"
-                    label="作者"
-                    :margin="[10, 0]"
-                    v-if="postData.createUser.id == item.createUser.id"
-                  ></tm-tag>
-                  <tm-tag
-                    text
-                    size="xs"
-                    label="置顶"
-                    :margin="[10, 0]"
-                    v-if="item.isTop"
-                  ></tm-tag>
-                </template>
-                <template v-slot:actions>
-                  <view class="flex flex-row norwap">
-                    <view class="flex flex-row flex-center pl-16">
-                      <tm-icon :font-size="24" name="tmicon-md-heart-empty"></tm-icon>
-                      <tm-text _class="pl-10" :font-size="24" label="125"></tm-text>
+        <view class="round-8 ma-12 white">
+          <view class="flex flex-row flex-row-center-between mb-24">
+            <tm-text label="评论信息" :font-size="32" _class="font-bold"></tm-text>
+          </view>
+          <!-- comment -->
+          <tm-virtual-list
+            :load="getdata"
+            :width="_widthRpx"
+            :height="sysinfo.height - 44"
+            :data="dataList"
+            :itemHeight="300"
+            ￼
+          >
+            <template v-slot:default="{ data }">
+              <view v-for="(item, index) in data" :key="index">
+                <tm-comment
+                  :margin="[0]"
+                  :author="item.createUser.name"
+                  :avatar="item.createUser.avatar"
+                  :time="item.createTime"
+                  :content="item.content"
+                  @content-click="replyTo(item.id, item.createUser)"
+                  @content-long-click="showCommentOperation(item)"
+                  @author-click="goUser"
+                  @avatar-click="goUser"
+                >
+                  <template v-slot:time>
+                    <tm-tag
+                      text
+                      size="xs"
+                      label="作者"
+                      :margin="[10, 0]"
+                      v-if="postData.createUser.id == item.createUser.id"
+                    ></tm-tag>
+                    <tm-tag
+                      text
+                      size="xs"
+                      label="置顶"
+                      :margin="[10, 0]"
+                      v-if="item.isTop"
+                    ></tm-tag>
+                  </template>
+                  <template v-slot:actions>
+                    <view class="flex flex-row norwap">
+                      <view class="flex flex-row flex-center pl-16">
+                        <tm-icon :font-size="24" name="tmicon-md-heart-empty"></tm-icon>
+                        <tm-text _class="pl-10" :font-size="24" label="125"></tm-text>
+                      </view>
                     </view>
-                  </view>
-                </template>
-              </tm-comment>
-            </view>
-          </template>
-        </tm-virtual-list>
+                  </template>
+                </tm-comment>
+              </view>
+            </template>
+          </tm-virtual-list>
+        </view>
       </view>
     </view>
 
@@ -151,7 +154,7 @@
             <tm-text label="收藏"></tm-text>
           </tm-grid-item>
         </tm-grid> -->
-        <view class="flex flex-row flex-center px-16 flex-2">
+        <view class="flex flex-row flex-row-center-between px-16 flex-2">
           <view class="flex flex-col flex-col-center-center">
             <tm-icon :font-size="40" name="tmicon-collection"></tm-icon>
             <tm-text _class="pl-10 pr-24" :font-size="24" label="反馈"></tm-text>
@@ -165,7 +168,13 @@
             <tm-text _class="pl-10" :font-size="24" label="收藏"></tm-text>
           </view>
         </view>
-        <tm-button label="写评价" block :round="26" _class="flex-4"></tm-button>
+        <tm-button
+          label="写评价"
+          block
+          :round="26"
+          _class="flex-4"
+          :width="200"
+        ></tm-button>
       </view>
       <tm-input
         v-else

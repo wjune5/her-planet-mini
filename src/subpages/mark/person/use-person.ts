@@ -1,139 +1,170 @@
-import { getCurrentInstance, onMounted, ref,computed } from 'vue'
+import { getCurrentInstance, onMounted, ref, computed } from 'vue'
 import type { Category, Tag } from '@/api/interfaces/category'
 
 import * as dayjs from '@/tmui/tool/dayjs/esm/index'
 
-export const usePerson = () => {
-  const instance = getCurrentInstance()
-  const DayJs = dayjs.default
-const showCal = ref(false)
-const showCity = ref(false)
-const picker_category_show = ref(false)
-const picker_time_show = ref(false)
-const city_show = ref(false)
-const biz_time_show = ref(false)
-const bizTimeStr = ref('')
-const pickerStr = ref('')
-const categoryList = ref<Array<Category>>([
-	{
-		name: '餐饮',
-		id: 1
-	},
-	{
-		name: '香蕉',
-		id: 2
-	},
-	{
-		name: '李子',
-		id: 3
-	}
-])
-const tagList = ref<Array<Tag>>([{
-    id:'1',
-    name:'女老板'
-}]);
-const show = ref({
-	cale: [],
-	caleStr: '',
-	time: '',
-	radio: '', //bonaer
-	pickerIndex: [],
-	pickerStr: '',
-	checkbox: [],
-	rate: 0,
-	slider: [0, 0],
-	segtab: '',
-	switch: '',
-	upload: [],
-	city: [],
-	cityStr: '',
-	nameuser: {
-		a: ''
-	},
-	testff: [],
-	ha: false,
-	stepper:1
-})
-const modelForm = ref({
-    title: '',
-    category:'',
-    tags: [],
-    phone:'',
-    address: '',
-    other:'',
-    description:'',
-    businessTime:''
-});
-
-const dayList = ref<Array<Tag>>([{
-    id:'1',
-    name:'每日营业'
-},
-{
-    id:'2',
-    name:'选择营业日'
-}]);
-
-const dayList2 = ref<Array<Tag>>([{
-    id:'1',
-    name:'全天'
-},
-{
-    id:'2',
-    name:'选择时间段'
-}]);
-const week = ref([{
-	id:'1',
-	name:'周一',
-
-}])
-const businessDayType = ref(1);
-const businessTimeType = ref(1);
-const fileList = ref([]);
-const timeStr = computed(() => (!show.value.time ? '' : DayJs(show.value.time).format('DD日 HH时')))
-const caleStr = computed(() => {
-	if (!show.value.cale || !Array.isArray(show.value.cale)) return ''
-	if (show.value.cale.length == 0) return ''
-	return DayJs(show.value.cale[0]).format('YYYY年MM月DD日')
-})
-
-const success_show = ref(false);
-const confirm = (e) => {
-	modelForm.value = {
+export const useSubPage = () => {
+	const instance = getCurrentInstance()
+	const DayJs = dayjs.default
+	const categoryList = ref<Array<Category>>([
+		{
+			name: '餐饮',
+			id: 1
+		},
+		{
+			name: '香蕉',
+			id: 2
+		},
+		{
+			name: '李子',
+			id: 3
+		}
+	])
+	const tagList = ref<Array<Tag>>([{
+		id: '1',
+		name: '女老板',
+		color:'primary'
+	}]);
+	const show = ref({
+		categoryIndex: [],
+		picker_category_show: false,
+		city: false,
+		biz_time_show: false
+	})
+	const modelForm = ref({
 		title: '',
-		category:'',
+		category: '',
 		tags: [],
-		phone:'',
+		phone: '',
+		city: [],
 		address: '',
-		other:'',
-		description:'',
-		businessTime:''
-	};
-	success_show.value = true;
-	console.log(e)
-}
+		latitude: 0,
+		longitude: 0,
+		other: '',
+		description: '',
+		businessTime: '',
+		fileList: []
+	});
+	// === business time BEGIN ===
 
-const handleSelectCity = () => {
-	showCity.value = !showCity.value
-}
+	const dayList = ref<Array<Tag>>([{
+		id: '1',
+		name: '每日营业'
+	},
+	{
+		id: '2',
+		name: '选择营业日'
+	}]);
 
-  return {
-    picker_category_show,
-    show,
-    modelForm,
-    tagList,
-    fileList,
-    categoryList,
-    handleSelectCity,
-	biz_time_show,
-	dayList,
-	dayList2,
-	businessDayType,
-	businessTimeType,
-	bizTimeStr,
-	city_show,
-	picker_time_show,
-	confirm,
-	success_show
-  }
+	const dayList2 = ref<Array<Tag>>([{
+		id: '1',
+		name: '全天'
+	},
+	{
+		id: '2',
+		name: '选择时间段'
+	}]);
+	const week = ref(['周一', '周二', '周三', '周四', '周五', '周六', '周日'])
+	const businessDayType = ref(1);
+	const businessTimeType = ref(1);
+	const businessDay = ref([1, 2, 3, 4, 5]);
+	const businessTime = ref(['2024/07/21 8:00:00', '2024/07/21 18:00:00']);
+	const businessTime_str_ar = ref(['2024/07/21 8:00:00', '2024/07/21 18:00:00']);
+	const businessTime_str_format = computed(() => {
+		
+		// let time = [];
+		// for (let i = 0; i < 2; i++) {
+		// 	time[i] = businessTime_str_ar.value[i].substring(11,16);
+		// }
+		if(confirm_value.value) {
+			return businessTime_str_ar.value.join('-');
+		} else {
+			return '08:00 - 18:00';
+		}
+	});
+	const bizTimeStr = computed(() => {
+		let tmp = [];
+		for (let i = 0; i < businessDay.value.length; i++) {
+			tmp[i] = week.value[businessDay.value[i]];
+		}
+		return tmp.join('、') + ' ' + businessTime_str_format.value;
+	})
+
+	const confirm_value = ref(false);
+	function handleBusinessDayTypeChange(e: any) {
+		console.log(e)
+	}
+	// === business time END ===
+
+	const success_show = ref(false);
+	const confirm = (e) => {
+		success_show.value = true;
+
+		modelForm.value = {
+			title: '',
+			category: '',
+			tags: null,
+			phone: '',
+			city: [],
+			address: '',
+			latitude: 0,
+			longitude: 0,
+			other: '',
+			description: '',
+			businessTime: '',
+			fileList: []
+		};
+		console.log(e)
+	}
+	const cityStr = ref('');
+	const handleSelectCity = () => {
+		show.value.city = !show.value.city;
+	}
+
+	const openMap = () => {
+		uni.getLocation({
+			type: 'gcj02',
+			success(res) {
+				uni.chooseLocation({
+					latitude: res.latitude,
+					longitude: res.longitude,
+					success: (res) => {
+						modelForm.value.address = res.address;
+						modelForm.value.title = res.name;
+						modelForm.value.latitude = res.latitude;
+						modelForm.value.longitude = res.longitude;
+					},
+					fail: () => {
+						uni.showModal({
+							content: '打开地图失败！'
+						})
+					},
+				})
+			},
+		})
+
+	}
+	return {
+		show,
+		modelForm,
+		tagList,
+		categoryList,
+		handleSelectCity,
+		cityStr,
+		dayList,
+		dayList2,
+		businessDayType,
+		businessTimeType,
+		businessDay,
+		businessTime,
+		businessTime_str_ar,
+		businessTime_str_format,
+		bizTimeStr,
+		confirm_value,
+		handleBusinessDayTypeChange,
+		openMap,
+		week,
+		confirm,
+		success_show
+	}
 }

@@ -11,9 +11,9 @@
       ></tm-image>
     </view>
     <!-- 用户信息 -->
-    <view class="user-info my-24" @tap.stop="goUserInfoPage">
-      <view class="info-content">
-        <view class="info-avatar">
+    <view class="user-info my-24">
+      <view class="mb-12 info-content">
+        <view class="info-avatar" @tap.stop="goUserInfoPage">
           <tm-avatar
             :round="26"
             outlined
@@ -26,11 +26,23 @@
         </view>
 
         <view class="content">
-          <tm-text :font-size="38" _class="mb-12 font-bold-light">{{
-            userInfo?.name || "Hey"
-          }}</tm-text>
+          <view class="flex flex-row flex-row-center-between">
+            <tm-text
+              :font-size="38"
+              _class="font-bold-light"
+              :label="userInfo?.name || 'Hey，欢迎进入'"
+              @tap.stop="goUserInfoPage"
+            ></tm-text>
+
+            <tm-button
+              label="登录"
+              :width="144"
+              :round="20"
+              @click="handleWxLogin"
+            ></tm-button>
+          </view>
           <view class="uid">
-            <tm-text :font-size="28" color="#979797">uid: {{ userInfo?.id }}</tm-text>
+            <tm-text :font-size="28" color="#979797" label="请登录"></tm-text>
           </view>
         </view>
       </view>
@@ -68,10 +80,9 @@ const {
   loginHandle,
   goUserInfoPage,
   goCommonProblemPage,
-  goMemberRightsPage,
-  goOrderListPage,
   navbarInitFinishHandle,
   goSetting,
+  handleWxLogin,
 } = useSubPage();
 const sysinfo = useWindowInfo();
 

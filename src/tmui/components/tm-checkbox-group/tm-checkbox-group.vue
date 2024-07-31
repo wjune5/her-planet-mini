@@ -46,7 +46,11 @@ const props = defineProps({
 	 model: {
 		type: String,
 		default: 'checkbox' // checkbox,button
-	}
+	},
+	sort: {
+        type: Boolean,
+        default:false
+  }
 })
 let _cacheBoxList: Ref<Array<string | number | boolean>> = ref([])
 //去重
@@ -79,7 +83,15 @@ function pushKey(key: string | number | boolean) {
 }
 function addKey(key: string | number | boolean) {
 	if (_mValue.value.includes(key)) return
+		// for(let i = 0; i<_mValue.value.length;i++) {
+		// 	if(_mValue.value[i]>key){
+		// 		_mValue.value
+		// 	}
+		// }
 	_mValue.value.push(key)
+	if(props.sort) {
+	    _mValue.value.sort(function(a, b){return a-b})
+	}
 	emits('update:modelValue', _mValue.value)
 	nextTick(() => {
 		emits('change', _mValue.value)

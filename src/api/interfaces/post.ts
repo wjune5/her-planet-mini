@@ -12,7 +12,7 @@ export interface PostDetail {
   id: string
   title: string
   content:string
-  imgs?: string[]
+  imgs: string[]
   createUser: User
   tags: string[],
   address: string,
@@ -32,10 +32,15 @@ export interface Comment {
   replyCount: Number
   createTime: string
   isTop: Boolean
+  like?:Boolean
+  actions:Action
 } 
 interface Extra {
   icon?:string
   dots?: number
+}
+interface Action {
+  like?:number
 }
 export interface Area {
   id: string

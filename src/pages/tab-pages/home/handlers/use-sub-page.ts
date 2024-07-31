@@ -1,6 +1,6 @@
-import { getCurrentInstance, onMounted, ref } from 'vue'
+import { getCurrentInstance, onMounted, ref, nextTick } from 'vue'
 import { useSubPageProvide } from '../../../index/handlers'
-import type { IndexPageOnLoadFunc, IndexPageOnScrollFunc } from '../../../types'
+import type { IndexPageOnLoadFunc, IndexPageOnScrollFunc, IndexPageOnShowFunc } from '../../../types'
 import QQMapWX from "@/tn/utils/qqmap-wx-jssdk.min.js";
 import { MAP_KEY } from '@/api/constants';
 import { SettingConfig, Area } from "@/api/constants/index.ts";
@@ -9,6 +9,9 @@ import { Post } from '@/api/interfaces/post'
 
 export const useSubPage = () => {
   const instance = getCurrentInstance()
+  const qqmapsdk = new QQMapWX({
+    key: MAP_KEY
+  });
   // 顶部轮播图
   const swiperData = ref<string[]>([
     'https://resource.tuniaokj.com/images/swiper/ad2.jpg',
@@ -35,7 +38,7 @@ export const useSubPage = () => {
     {
       id: '2',
       title: 'pict顶顶顶u',
-      content: 'i like that this is a goood resturant!! its worthy of trying.',
+      content: '我喜欢这个，不错',
       imgs: ['https://resource.tuniaokj.com/images/swiper/ad3.jpg'],
       action: {
         likes: 0,
@@ -50,7 +53,7 @@ export const useSubPage = () => {
     {
       id: '3',
       title: '杨大爷麻辣香肠腊肠500克四川特产烟熏肉农家自制川味烤腊肉辣肠',
-      content: 'i like that this is a goood resturant!! its worthy of trying.',
+      content: '我喜欢这个，不错',
       imgs: ['https://gw.alicdn.com/bao/uploaded/i2/1848622920/O1CN018zBHJ91XRPJ4bHW78_!!0-item_pic.jpg_320x320q90.jpg'],
       action: {
         likes: 0,
@@ -65,7 +68,7 @@ export const useSubPage = () => {
     {
       id: '4',
       title: '带盖 酸奶杯一次性塑料布丁杯胖胖pp果冻杯慕斯甜品杯双皮奶100套',
-      content: 'i like that this is a goood resturant!! its worthy of trying.',
+      content: '我喜欢这个，不错',
       imgs: ["https://gw.alicdn.com/imgextra/i4/2207613550143/O1CN01hPpOvy1CvXQdlZLeC_!!2207613550143-0-alimamacc.jpg_q90.jpg"],
       action: {
         likes: 0,
@@ -110,7 +113,7 @@ export const useSubPage = () => {
     console.log(key)
   }
   function goDetail(id: string) {
-
+    uni.$tm.u.routerTo('/subpages/post/detail/detail?id=' + id)
   }
 
   function handleCitySelect() {
@@ -133,51 +136,151 @@ export const useSubPage = () => {
     console.log(key)
   }
 
-  const curLocation = ref({ latitude: 0, longitude: 0});
-const selectedArea = ref(uni.$tm.u.getCookie(Area) || "北京市");
-const selectedCity = ref({str:'',arr:[]});
-const city_show = ref(false);
+  const curLocation = ref({ latitude: 0, longitude: 0 });
+  const meLocation = ref('北京市');
+  // uni.$tm.u.getCookie(Area) || 
+  const selectedArea = ref("北京市");
+  const selectedCity = ref({ str: '', arr: [] });
+  function handleCityPick() {
+    selectedArea.value = selectedCity.value.arr[1];
+
+    qqmapsdk.geocoder({
+      address: selectedCity.value.str, //地址参数，例：固定地址，address: '北京市海淀区彩和坊路海淀西大街74号'
+      success: function (res) {
+        var res = res.result;
+        var latitude = res.location.lat;
+        var longitude = res.location.lng;
+        //根据地址解析在地图上标记解析地址位置
+        uni.createMapContext("map", instance).moveToLocation({
+          latitude: latitude,
+          longitude: longitude
+        });
+        // let markers = [{
+        //   id: 0,
+        //   title: res.title,
+        //   latitude: latitude,
+        //   longitude: longitude,
+        //   width: 20,
+        //   height: 20,
+        //   callout: { //可根据需求是否展示经纬度
+        //     content: latitude + ',' + longitude,
+        //     color: '#000',
+        //     display: 'ALWAYS'
+        //   }
+        // }]
+
+        // console.log(markers)
+      },
+      fail: function (error) {
+        console.error(error);
+      },
+      complete: function (res) {
+        console.log(res);
+      }
+    })
+
+    // uni.$tm.u.setCookie(Area, selectedCity.value.arr[1])
+  }
+  const city_show = ref(false);
 
   const onLoad: IndexPageOnLoadFunc = () => {
-    uni.authorize({
-      scope: 'scope.userLocation',
-      success() {
-        const qqmapsdk = new QQMapWX({
-          key: MAP_KEY
-        });
-        qqmapsdk.reverseGeocoder({
-          location: "",
-          fail: function (res) {
-            console.log(res)
-          },
-          success: function (res) {
-            let info = res.result;
-            selectedArea.value=info.ad_info.city;
-            curLocation.value.latitude = info.location.latitude;
-            curLocation.value.longitude = info.location.longitude;
-          },
-        });
-        // uni.getLocation({
-        //   type: 'gcj02',
-        //   success: function (res) {
-        //     curLocation.value.latitude = res.latitude;
-        //     curLocation.value.longitude = res.longitude;
-        //     console.log('当前位置的经度：' + res.longitude);
-        //     console.log('当前位置的纬度：' + res.latitude);
 
-          
-
-        //   },
-        //   fail: function (res) {
-        //     uni.$tm.u.toast('获取当前位置失败！')
-        //   }
-        // });
-      }
-    });
     // mock();
   }
 
+  const onShow: IndexPageOnShowFunc = () => {
+    uni.getSetting({
+      success: (res) => {
+        if (!res.authSetting['scope.userLocation']) {
+          uni.authorize({
+            scope: 'scope.userLocation',
+            success() {
+              getLoc();
+            },
+            fail: () => {
+              uni.showModal({
+                title: '提示',
+                content: '若不授权，将无法使用地图功能',
+                cancelText: '不授权',
+                confirmText: '授权',
+                success(result) {
+                  if (result.confirm) {
+                    uni.openSetting({
+                      success(res) {
+
+                      }
+                    }
+                    )
+                  }
+                },
+              })
+            }
+          });
+        } else {
+          getLoc();
+        }
+      },
+      fail(err) {
+        uni.showModal({
+          title: '提示',
+          content: '若不授权，将无法使用地图功能',
+          cancelText: '不授权',
+          confirmText: '授权',
+          success(result) {
+            if (result.confirm) {
+              uni.openSetting({
+                success(res) {
+
+                }
+              }
+              )
+            }
+          },
+        })
+      }
+    })
+
+  }
+
+  function getLoc() {
+    uni.getLocation({
+      type: 'gcj02',
+      success: function (lres) {
+        curLocation.value.latitude = lres.latitude;
+        curLocation.value.longitude = lres.longitude;
+        getGeocoder(lres.latitude, lres.longitude);
+        nextTick(() => {
+
+          meLocation.value = selectedArea.value;
+        })
+      },
+      fail: function (res) {
+        uni.$tm.u.toast('获取当前位置失败！')
+      }
+    });
+
+  }
+
+  function getGeocoder(latitude: number, longitude: number) {
+    qqmapsdk.reverseGeocoder({
+      location: { latitude: latitude, longitude: longitude },
+      fail: function (qqErr: any) {
+        console.log(qqErr)
+      },
+      success: function (mapRes) {
+        let info = mapRes.result;
+        // console.log(info)
+        selectedArea.value = info.ad_info.city;
+        // curLocation.value.latitude = info.location.lat;
+        // curLocation.value.longitude = info.location.lng;
+        // meLocation.value.latitude = info.location.lat;
+        // meLocation.value.longitude = info.location.lng;
+        loading_show.value=false
+      },
+    });
+  }
   const markers = ref([]);
+
   function mock() {
     markers.value = [{
       distance: 0.05828283926096898,
@@ -202,11 +305,28 @@ const city_show = ref(false);
     curLocation.value.longitude = 113.88770606927332
   }
 
+  const loading_show=ref(false);
   function handleRegionChange(e) {
+    if (e.type == 'end') {
+      loading_show.value=true;
+      uni.createMapContext("map", instance).getCenterLocation({
+        success(result) {
+          uni.$tm.u.throttle(()=>getGeocoder(result.latitude, result.longitude),2000);
+        },
+      });
+    }
+  }
 
+  function locateMe() {
+    uni.createMapContext("map", instance).moveToLocation({
+      latitude: curLocation.value.latitude,
+      longitude: curLocation.value.longitude
+    });
+    selectedArea.value = meLocation.value;
   }
   useSubPageProvide(0, {
     onLoad,
+    onShow,
   })
 
   return {
@@ -224,6 +344,9 @@ const city_show = ref(false);
     handleCitySelect,
     selectedArea,
     typeTabs,
-    handleTypeChange
+    handleTypeChange,
+    handleCityPick,
+    locateMe,
+    loading_show
   }
 }

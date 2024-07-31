@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 
 export const useComment = () => {
-    const modelForm = ref({comment:'',fileList:''});
+    const modelForm = ref({ comment: '', fileList: [] });
     onLoad((options) => {
     })
 
@@ -10,11 +10,17 @@ export const useComment = () => {
     const historyClickHandle = (value: string) => {
     }
 
+    function onStart() {
+
+    }
     function confirm() {
 
     }
+    function completeFile() {
+
+    }
     return {
-        onStart,completeFile
-        confirm,modelForm
+        onStart, completeFile,
+        confirm, modelForm
     }
 }

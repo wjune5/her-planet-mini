@@ -5,9 +5,9 @@ export interface User {
   gender?: number
   desc?: string
   address?: string
-  follower: number
-  follow: number
-  thumbs: number
+  follower?: number
+  follow?: number
+  thumbs?: number
 }
 export interface UserDetail {
   id: string

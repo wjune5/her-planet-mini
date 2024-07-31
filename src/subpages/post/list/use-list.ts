@@ -13,8 +13,12 @@ export const useList = () => {
         searchValue.value = value
     }
 
+    function goDetail(id:string) {
+        uni.$tm.u.routerTo('/subpages/post/detail/detail?id='+id)
+    }
     return {
         searchValue,
         historyClickHandle,
+        goDetail
     }
 }

@@ -9,7 +9,7 @@
         zIndex: props.zIndex,
       }"
     >
-      <view class="relative" style="top: 0px">
+      <view class="relative" style="top: 6px">
         <tm-sheet
           :blur="_blur"
           :color="props.color"
@@ -55,25 +55,11 @@
 </template>
 <script lang="ts" setup>
 import {
-  getCurrentInstance,
   computed,
-  Ref,
-  ref,
-  provide,
-  inject,
-  onUpdated,
-  onMounted,
-  onUnmounted,
-  nextTick,
-  watch,
-  PropType,
+  ref
 } from "vue";
 import {
-  custom_props,
-  computedTheme,
-  computedClass,
-  computedStyle,
-  computedDark,
+  custom_props
 } from "../../tmui/tool/lib/minxs";
 const props = defineProps({
   ...custom_props,
@@ -122,7 +108,7 @@ const props = defineProps({
 let sys = uni.getSystemInfoSync();
 
 const _width = computed(
-  () => uni.upx2px(props.width) || sys?.windowWidth || 750
+  () => props.width || sys?.windowWidth || 750
 );
 const _blur = computed(() => props.blur);
 const _showSafe = ref(props.showSafe);

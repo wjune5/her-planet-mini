@@ -96,7 +96,7 @@
           _dotPosition == 'right' && _align == 'right' ? 'pr-12 pb-24' : '',
 
           _dotPosition == 'bottom' && _align == 'left' ? 'ml-12 mb-0' : '',
-          _dotPosition == 'bottom' && _align == 'right' ? 'pr-12 mb-28' : '',
+          _dotPosition == 'bottom' && _align == 'right' ? 'mr-24 mb-38' : '',
           _dotPosition == 'top' && _align == 'left' ? 'ml-12 ' : '',
           _dotPosition == 'top' && _align == 'right' ? 'pr-12 ' : '',
         ]"
@@ -105,7 +105,7 @@
             ? {
                 left: '0px',
                 bottom: '0px',
-                width: `${props.width}rpx`,
+                width: `${props.width - 24}rpx`,
                 height: `${60}rpx`,
               }
             : '',
@@ -134,8 +134,8 @@
           :color="_currentActive == index ? props.color : 'white'"
           v-for="(item, index) in _list"
           :key="index"
-          :width="12"
-          :height="12"
+          :width="10"
+          :height="10"
         ></tm-sheet>
       </view>
       <!-- rect -->

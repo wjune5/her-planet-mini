@@ -9,7 +9,7 @@
     >
     </tm-navbar>
     <tm-form
-      :margin="[24, 24]"
+      :margin="[12]"
       :padding="[0, 0]"
       @submit="confirm"
       ref="form"
@@ -129,6 +129,7 @@
           showCharNumber
           :maxlength="50"
           color="grey-1"
+          :round="8"
         >
         </tm-input>
       </tm-form-item>
@@ -140,7 +141,7 @@
         :rules="[{ required: true, message: '请输入从业者工作时间' }]"
       >
         <tm-sheet
-          :margin="[16, 24]"
+          :margin="[0]"
           :padding="[40, 22]"
           :round="26"
           :width="0"

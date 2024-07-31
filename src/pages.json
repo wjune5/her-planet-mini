@@ -44,7 +44,7 @@
 					}
 				},
 				{
-					"path": "report/report",
+					"path": "comment/comment",
 					"style": {
 						"navigationStyle": "custom"
 					}

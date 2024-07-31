@@ -16,9 +16,10 @@
         :showBottomBorder="false"
         placeholder="请分享你的体验供其她姐妹参考~"
         type="textarea"
-        :height="360"
+        :height="200"
         showCharNumber
         :maxlength="100"
+        :round="8"
       >
       </tm-input>
       <tm-form-item layout="vertical" label="上传图片">
@@ -36,7 +37,7 @@
       <tm-form-item :border="false">
         <view class="flex flex-row">
           <view class="flex-1 mr-32">
-            <tm-button form-type="submit" label="提交" block></tm-button>
+            <tm-button form-type="submit" label="提交" block :round="20"></tm-button>
           </view>
         </view>
       </tm-form-item>
@@ -45,7 +46,6 @@
 </template>
 <script lang="ts" setup>
 import { ref, getCurrentInstance, computed, inject } from "vue";
-// const { cards } = useSubPage();
 import { useWindowInfo } from "@/tmui/tool/useFun/useWindowInfo";
 const sysinfo = useWindowInfo();
 const _widthRpx = computed(() => uni.$tm.u.torpx(sysinfo.width));
@@ -53,5 +53,5 @@ const _heightRpx = computed(() => uni.$tm.u.torpx(sysinfo.height - 40));
 
 import { useComment } from "./use-comment";
 
-const { modelForm,confirm, onStart,completeFile } = useComment();
+const { modelForm, confirm, onStart, completeFile } = useComment();
 </script>

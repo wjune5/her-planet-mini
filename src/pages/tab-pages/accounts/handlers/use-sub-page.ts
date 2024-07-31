@@ -60,19 +60,24 @@ export const useSubPage = () => {
     uni.$tm.u.routerTo('/subpages/account/setting/setting')
   }
 
-  const login = () => {
+  const handleWxLogin = () => {
+    console.log('login')
     uni.login({
       provider: 'weixin',
+      onlyAuthorize:true,
       success: function (loginRes) {
-        console.log(loginRes.authResult);
-        uni.getUserProfile({
-          desc:'用于设置头像、昵称',
-          lang: 'zh_CN',
-          success: (userRes) => {
-            console.log(userRes)
-            // 登录后台
-          }
-        })
+        console.log(loginRes.code);
+        // uni.getUserProfile({
+        //   desc:'用于设置头像、昵称',
+        //   lang: 'zh_CN',
+        //   success: (userRes) => {
+        //     console.log(userRes)
+        //     // 登录后台
+        //   }
+        // })
+      },
+      fail:function (err) {
+        uni.$tm.u.toast('获取登录code失败，请稍后再试~');
       }
     });
   }
@@ -100,6 +105,7 @@ export const useSubPage = () => {
     goUserInfoPage,
     goCommonProblemPage,
     navbarInitFinishHandle,
-    goSetting
+    goSetting,
+    handleWxLogin
   }
 }

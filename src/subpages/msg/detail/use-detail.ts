@@ -21,7 +21,7 @@ export const useSubPage = () => {
     },
     {
         id:'2',
-        content: 'i like that this is a goood resturant!! its worthy of trying. I know I will spend a big amount of money. I have no choice. I do not have agood job.',
+        content: '我喜欢这个，不错 I know I will spend a big amount of money. I have no choice. I do not have agood job.',
         createTime:'2024-04-20 14:00',
         createUser: {
             id:'42',

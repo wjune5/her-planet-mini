@@ -13,10 +13,10 @@
     <view style="margin-top: 202rpx; z-index: 99">
       <tm-sheet
         :margin="[16, 24]"
-        :padding="[40, 22]"
+        :padding="[0, 0]"
         :round="26"
-        :width="sysinfo.width - 96"
-        :height="64"
+        :width="sysinfo.width - 16"
+        :height="80"
         unit="px"
         text
         color="grey-4"
@@ -24,27 +24,32 @@
         _class="flex flex-row"
       >
         <view class="flex flex-row flex-row-center-start" style="line-height: 40rpx">
-          <view class="flex flex-row flex-row-center-start" @click="handleCitySelect">
+          <view
+            class="flex flex-row flex-row-center-start pl-40 pr-24 py-22"
+            @click="city_show = !city_show"
+          >
             <tm-text
+            v-if="!loading_show"
               :label="selectedArea"
               :font-size="28"
               color="#3D3D3D"
               _class="mr-24"
             ></tm-text>
+            <tm-icon v-else spin :font-size="40" name="tmicon-redo"></tm-icon>
             <tm-icon name="tmicon-angle-down" :font-size="24" color="#959494"></tm-icon>
           </view>
 
           <tm-icon
             name="tmicon-search"
             :font-size="24"
-            _class="ml-24"
             color="#959494"
+            _class="py-22 pl-12"
           ></tm-icon>
           <tm-text
             @click="goSearch"
             label="搜索身边的女性友好空间"
             color="#959494"
-            _class="ml-24"
+            _class="ml-24 py-22"
           ></tm-text>
         </view>
       </tm-sheet>
@@ -67,6 +72,7 @@
       </tm-tabs>
     </view>
     <map
+      id="map"
       class="fixed"
       style="top: 0; left: 0; height: 100vh; z-index: 2"
       :style="`width:${sysinfo.width}px`"
@@ -76,7 +82,7 @@
       show-location
       @regionchange="handleRegionChange"
     >
-      <view class="absolute" style="right: 20px; bottom: 550rpx">
+      <view class="absolute" style="right: 20px; bottom: 550rpx" @click="locateMe">
         <tm-image :width="80" :height="80" src="/static/home/locate.png"></tm-image>
       </view>
     </map>
@@ -93,7 +99,7 @@
     <tm-drawer
       ref="calendarView"
       placement="bottom"
-      :height="_height"
+      :height="_heightRpx"
       closeable
       v-model:show="explore_show"
     >
@@ -105,6 +111,7 @@
         :width="_widthRpx"
         :height="56"
         default-name="1"
+        :item-height="56"
         :item-round="26"
         transparent
         itemModel="card"
@@ -115,61 +122,66 @@
       <tm-virtual-list
         :load="getdata"
         :width="_widthRpx"
-        :height="_height"
-        :data="dataList"
-        :itemHeight="160"
+        :height="_heightRpx - 82"
+        :data="imglist"
+        :itemHeight="200"
       >
         <template v-slot:default="{ data }">
-          <tm-sheet
-            :round="12"
-            color="#F8F8F8"
-            :width="_widthRpx - 112"
-            :padding="[24, 32]"
-            :margin="[28, 12]"
+          <view
+            style="height: 200rpx; width: 100%"
             v-for="(item, index) in data"
             :key="index"
-            @click="goDetail(item.id)"
           >
-            <view class="flex flex-row flex-row-center-start">
-              <tm-image
-                :width="130"
-                :height="130"
-                :src="item.src"
-                :round="8"
-                _class="flex-1"
-              ></tm-image>
-              <view
-                class="flex flex-col flex-4 pl-24 flex-col-top-start"
-                style="position: relative"
-              >
-                <tm-text label="大米旗舰店" :font-size="28" color="#3D3D3D"></tm-text>
-                <view style="min-height: 60rpx">
-                  <tm-tag
-                    v-for="(titem, tidx) in item.tags"
-                    :key="tidx"
-                    size="xs"
-                    text
-                    :label="`hello${tidx}`"
-                  ></tm-tag>
-                </view>
-                <view class="flex flex-row flex-row-center-between" style="width: 100%">
-                  <view class="flex flex-row flex-row-center-start">
-                    <tm-text label="东城区" :font-size="28" color="#767474"></tm-text>
-                    <tm-divider vertical :height="20"></tm-divider>
-                    <tm-text label="住宿" :font-size="28" color="#767474"></tm-text>
+            <tm-sheet
+              :round="12"
+              color="#F8F8F8"
+              :width="_widthRpx - 112"
+              :height="130"
+              :padding="[24, 32]"
+              :margin="[28, 12]"
+              @click="goDetail(item.id)"
+            >
+              <view class="flex flex-row flex-row-center-start">
+                <tm-image
+                  :width="130"
+                  :height="130"
+                  :src="item.src"
+                  :round="8"
+                  _class="flex-1"
+                ></tm-image>
+                <view
+                  class="flex flex-col flex-4 pl-24 flex-col-top-start"
+                  style="position: relative"
+                >
+                  <tm-text label="大米旗舰店" :font-size="28" color="#3D3D3D"></tm-text>
+                  <view style="min-height: 60rpx">
+                    <tm-tag
+                      v-for="(titem, tidx) in item.tags"
+                      :key="tidx"
+                      size="xs"
+                      text
+                      :label="`hello${tidx}`"
+                    ></tm-tag>
                   </view>
-                  <view class="flex flex-row flex-row-center-end flex-1">
-                    <tm-image
-                      src="/static/msg/distance.png"
-                      :height="24"
-                      :width="24"
-                    ></tm-image>
-                    <tm-text label="距离" :font-size="28" color="#767474"></tm-text>
+                  <view class="flex flex-row flex-row-center-between" style="width: 100%">
+                    <view class="flex flex-row flex-row-center-start">
+                      <tm-text label="东城区" :font-size="28" color="#767474"></tm-text>
+                      <tm-divider vertical :height="20"></tm-divider>
+                      <tm-text label="住宿" :font-size="28" color="#767474"></tm-text>
+                    </view>
+                    <view class="flex flex-row flex-row-center-end flex-1">
+                      <tm-image
+                        src="/static/msg/distance.png"
+                        :height="24"
+                        :width="24"
+                      ></tm-image>
+                      <tm-text label="距离" :font-size="28" color="#767474"></tm-text>
+                    </view>
                   </view>
                 </view>
               </view>
-            </view>
-          </tm-sheet>
+            </tm-sheet>
+          </view>
         </template>
       </tm-virtual-list>
     </tm-drawer>
@@ -178,6 +190,9 @@
       v-model:show="city_show"
       v-model="selectedCity.arr"
       v-model:model-str="selectedCity.str"
+      @confirm="handleCityPick"
+      city-level="city"
+      selected-model="name"
     ></tm-city-picker>
   </tm-app>
 </template>
@@ -205,10 +220,13 @@ const {
   markers,
   handleRegionChange,
   selectedCity,
+  handleCityPick,
+  locateMe,
+  loading_show
 } = useSubPage();
 
 const _widthRpx = computed(() => uni.$tm.u.torpx(sysinfo.width));
-const _height = computed(() => uni.$tm.u.torpx(sysinfo.height - 180));
+const _heightRpx = computed(() => uni.$tm.u.torpx(sysinfo.height - 180));
 
 const sysinfo = useWindowInfo();
 const isList = ref(uni.$tm.u.getCookie(SettingConfig));
@@ -221,28 +239,30 @@ const getdata = (e: string) => {
   return new Promise((res, rej) => {
     setTimeout(function () {
       if (e == "top") {
-        dataList.value = dataList.value;
-        // for (let i = 0; i < 10; i++) {
-        //   imglist.value.push({
-        //     src: "https://i0.pickpik.com/photos/298/434/513/beach-dawn-dusk-ocean-thumb.jpg",
-        //     index: i,
-        //   });
-        // }
+        dataList.value = [];
+        for (let i = 0; i < 10; i++) {
+          dataList.value.push({
+            src:
+              "https://i0.pickpik.com/photos/298/434/513/beach-dawn-dusk-ocean-thumb.jpg",
+            tags: ["hello"],
+            index: i,
+          });
+        }
+      } else if (e == "bottom") {
+        let len = dataList.value.length;
+        for (let i = len; i < 10 + len; i++) {
+          dataList.value.push({
+            src:
+              "https://i0.pickpik.com/photos/298/434/513/beach-dawn-dusk-ocean-thumb.jpg",
+            tags: [],
+            index: i,
+          });
+        }
       }
-      // else if (e == "bottom") {
-      //   let len = imglist.value.length;
-      //   for (let i = len; i < 10 + len; i++) {
-      //     imglist.value.push({
-      //       src: "https://i0.pickpik.com/photos/298/434/513/beach-dawn-dusk-ocean-thumb.jpg",
-      //       index: i,
-      //     });
-      //   }
-      // }
       res(true);
-    }, 2500);
+    }, 1000);
   });
 };
-const wall = ref<InstanceType<typeof tmWaterfall> | null>(null);
 const imglist = ref([
   {
     img:

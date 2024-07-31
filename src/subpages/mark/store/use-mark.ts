@@ -23,7 +23,7 @@ export const useSubPage = () => {
 	const tagList = ref<Array<Tag>>([{
 		id: '1',
 		name: '女老板',
-		color:'primary'
+		color: 'primary'
 	}]);
 	const show = ref({
 		categoryIndex: [],
@@ -71,12 +71,12 @@ export const useSubPage = () => {
 	const businessTime = ref(['2024/07/21 8:00:00', '2024/07/21 18:00:00']);
 	const businessTime_str_ar = ref(['2024/07/21 8:00:00', '2024/07/21 18:00:00']);
 	const businessTime_str_format = computed(() => {
-		
+
 		// let time = [];
 		// for (let i = 0; i < 2; i++) {
 		// 	time[i] = businessTime_str_ar.value[i].substring(11,16);
 		// }
-		if(confirm_value.value) {
+		if (confirm_value.value) {
 			return businessTime_str_ar.value.join('-');
 		} else {
 			return '08:00 - 18:00';
@@ -129,12 +129,16 @@ export const useSubPage = () => {
 					latitude: res.latitude,
 					longitude: res.longitude,
 					success: (res) => {
+						let addr=getAddress(res.address);
+						console.log(addr)
 						modelForm.value.address = res.address;
 						modelForm.value.title = res.name;
+						//提取地址中的城市
 						modelForm.value.latitude = res.latitude;
 						modelForm.value.longitude = res.longitude;
 					},
-					fail: () => {
+					fail: (err) => {
+						console.log(err)
 						uni.showModal({
 							content: '打开地图失败！'
 						})
@@ -143,6 +147,12 @@ export const useSubPage = () => {
 			},
 		})
 
+	}
+
+	function getAddress(val:string) {
+		// let reg = /.+?(省|市|自治区|自治州|县|区)/g;
+		let reg = /^(.*?省|.*?自治区)(.*?市)?(.*?区|.*?县)?(.*)/g;
+	    return !!val.match(reg);
 	}
 	return {
 		show,

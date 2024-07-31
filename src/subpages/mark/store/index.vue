@@ -9,7 +9,7 @@
     >
     </tm-navbar>
     <tm-form
-      :margin="[24, 24]"
+      :margin="[12]"
       :padding="[0, 0]"
       @submit="confirm"
       ref="form"
@@ -90,7 +90,7 @@
           :transparent="true"
           align="right"
           placeholder="店铺名称"
-          placeholder-style="color:#fff;"
+          placeholder-style="color:#7B7B7B;"
         >
         </tm-input>
       </tm-form-item>
@@ -162,6 +162,7 @@
           showCharNumber
           :maxlength="50"
           color="grey-1"
+          :round="8"
         >
         </tm-input>
       </tm-form-item>
@@ -173,7 +174,7 @@
         :rules="[{ required: true, message: '请选择时间' }]"
       >
         <tm-sheet
-          :margin="[16, 24]"
+          :margin="[0]"
           :padding="[40, 22]"
           :round="26"
           :width="0"
@@ -186,7 +187,7 @@
         >
           <tm-text
             :userInteractionEnabled="false"
-            :label="bizTimeStr || '请选择有效日期'"
+            :label="bizTimeStr || '请选择日期'"
             @click="show.biz_time_show = !show.biz_time_show"
           ></tm-text>
         </tm-sheet>
@@ -286,7 +287,7 @@
     <tm-drawer
       ok-color="green"
       ref="calendarView"
-      :height="900"
+      :height="1000"
       v-model:show="show.biz_time_show"
     >
       <tm-cell label="营业日">
@@ -312,6 +313,7 @@
           model="button"
           v-model="businessDay"
           :defaultValue="businessDay"
+          sort
         >
           <tm-checkbox
             :value="index"

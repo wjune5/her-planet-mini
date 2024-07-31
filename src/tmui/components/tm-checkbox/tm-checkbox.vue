@@ -233,7 +233,7 @@ const props = defineProps({
   padding: {
     type: Array as PropType<number[]>,
     default: () => [16, 8],
-  },
+  }
 });
 let timed: any = NaN;
 const _checked = ref(props.defaultChecked ?? false);

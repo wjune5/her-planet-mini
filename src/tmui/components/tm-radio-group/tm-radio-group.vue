@@ -93,7 +93,6 @@ function addKey(key: string | number | boolean) {
 		emits('change', _mValue.value)
 	})
 }
-
 provide(
 	'tmRadioBoxDisabled',
 	computed(() => props.disabled)
@@ -104,5 +103,5 @@ provide(
 	computed(() => props.model == 'radio')
 )
 provide('tmCheckedBoxDir', props.direction)
-defineExpose({ pushKey: pushKey, addKey: addKey, checkBoxkeyId: checkBoxkeyId })
+defineExpose({ pushKey: pushKey, addKey: addKey,checkBoxkeyId: checkBoxkeyId })
 </script>

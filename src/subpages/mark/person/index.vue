@@ -27,12 +27,13 @@
         >
           <tm-text
             color="grey-1"
+            :follow-theme="modelForm.category != ''"
             :userInteractionEnabled="false"
             :label="modelForm.category || '请选择个人从业者服务类型'"
           ></tm-text>
           <tm-icon
             :userInteractionEnabled="false"
-            :font-size="24"
+            :font-size="20"
             color="grey-1"
             name="tmicon-angle-right"
           ></tm-icon>
@@ -46,12 +47,13 @@
         <view @click="show.city = !show.city" class="flex flex-row flex-row-center-end">
           <tm-text
             color="grey-1"
+            :follow-theme="cityStr != ''"
             :userInteractionEnabled="false"
             :label="cityStr || '请选择从业者服务的城市'"
           ></tm-text>
           <tm-icon
             :userInteractionEnabled="false"
-            :font-size="24"
+            :font-size="20"
             color="grey-1"
             name="tmicon-angle-right"
           ></tm-icon>
@@ -73,10 +75,11 @@
             :userInteractionEnabled="false"
             :label="modelForm.address || '请选择常驻地址(若无请选择市中心)'"
             color="grey-1"
+            :follow-theme="modelForm.address != ''"
           ></tm-text>
           <tm-icon
             :userInteractionEnabled="false"
-            :font-size="24"
+            :font-size="20"
             color="grey-1"
             name="tmicon-angle-right"
           ></tm-icon>
@@ -258,7 +261,7 @@
       :height="900"
       v-model:show="show.biz_time_show"
     >
-      <tm-cell label="营业日">
+      <tm-cell label="营业日" :titleFontSize="32">
         <template v-slot:right>
           <tm-radio-group
             v-model="businessDayType"
@@ -290,7 +293,7 @@
           ></tm-checkbox>
         </tm-checkbox-group>
       </view>
-      <tm-cell label="营业时间">
+      <tm-cell label="营业时间" :titleFontSize="32">
         <template v-slot:right>
           <tm-radio-group v-model="businessTimeType" :defaultValue="businessTimeType">
             <tm-radio

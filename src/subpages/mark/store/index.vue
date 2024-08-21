@@ -26,13 +26,14 @@
           class="flex flex-row flex-row-center-end"
         >
           <tm-text
+            :follow-theme="modelForm.category != ''"
             color="grey-1"
             :userInteractionEnabled="false"
             :label="modelForm.category || '请选择地点类型'"
           ></tm-text>
           <tm-icon
             :userInteractionEnabled="false"
-            :font-size="24"
+            :font-size="20"
             color="grey-1"
             name="tmicon-angle-right"
           ></tm-icon>
@@ -41,17 +42,24 @@
       <tm-form-item
         label="地区"
         field="modelForm.city"
-        :rules="[{ required: true, message: '请选择地点所在城市' }]"
+        :rules="[
+          {
+            required: true,
+            message: '请选择地点所在城市',
+            validator: (val) => val.length > 0,
+          },
+        ]"
       >
         <view @click="show.city = !show.city" class="flex flex-row flex-row-center-end">
           <tm-text
+            :follow-theme="cityStr != ''"
             color="grey-1"
             :userInteractionEnabled="false"
             :label="cityStr || '请选择地点所在城市'"
           ></tm-text>
           <tm-icon
             :userInteractionEnabled="false"
-            :font-size="24"
+            :font-size="20"
             color="grey-1"
             name="tmicon-angle-right"
           ></tm-icon>
@@ -63,8 +71,7 @@
         :rules="[
           {
             required: true,
-            message: '不能为空',
-            validator: (val) => val.length > 0,
+            message: '详细地址不能为空',
           },
         ]"
       >
@@ -72,11 +79,12 @@
           <tm-text
             :userInteractionEnabled="false"
             :label="modelForm.address || '请输入详细地址'"
+            :follow-theme="modelForm.address != ''"
             color="grey-1"
           ></tm-text>
           <tm-icon
             :userInteractionEnabled="false"
-            :font-size="24"
+            :font-size="20"
             color="grey-1"
             name="tmicon-angle-right"
           ></tm-icon>
@@ -118,14 +126,6 @@
             :key="index"
           ></tm-checkbox>
         </tm-checkbox-group>
-        <!-- <tm-radio-group model="button" v-model="modelForm.tags">
-          <tm-radio
-            :label="item.name"
-            :value="item.id"
-            v-for="(item, index) in tagList"
-            :key="index"
-          ></tm-radio>
-        </tm-radio-group> -->
       </tm-form-item>
       <tm-form-item label="电话" field="modelForm.phone">
         <tm-input
@@ -192,15 +192,6 @@
           ></tm-text>
         </tm-sheet>
       </tm-form-item>
-
-      <!-- <tm-form-item
-        required
-        label="评分"
-        field="rate"
-        :rules="[{ required: true, message: '请选择' }]"
-      >
-        <tm-rate v-model="show.rate" :default-value="show.rate"></tm-rate>
-      </tm-form-item> -->
       <tm-form-item layout="vertical" label="添加图像(第一张图作为头图)">
         <tm-upload
           showSort
@@ -214,11 +205,16 @@
         ></tm-upload>
       </tm-form-item>
       <tm-form-item :border="false">
-        <tm-radio-group>
-          <tm-radio follow-theme>
-            <template v-slot:default="{ checked }">
-              <tm-text label="我希望在标记信息中展示我的头像和昵称"></tm-text>
-            </template>
+        <tm-radio-group
+          v-model="modelForm.anonymous"
+          :default-value="modelForm.anonymous"
+        >
+          <tm-radio
+            follow-theme
+            value="true"
+            @change="handleAnonyChange"
+            label="我希望在标记信息中展示我的头像和昵称"
+          >
           </tm-radio>
         </tm-radio-group>
         <view class="flex flex-row">
@@ -227,11 +223,6 @@
           </view>
         </view>
       </tm-form-item>
-      <!-- <view class="fixed" style="bottom: 0px">
-        <view class="flex flex-row flex-row-center-between ma-24">
-          <tm-button label="发布"></tm-button>
-        </view>
-      </view> -->
     </tm-form>
 
     <tm-modal
@@ -263,15 +254,11 @@
         <tm-text label="查看信息" color="grey-4"></tm-text>
       </view>
     </tm-modal>
-    <!-- <tm-calendar
-      v-model="show.cale"
-      v-model:show="showCal"
-      :default-value="show.cale"
-    ></tm-calendar> -->
     <tm-city-picker
       v-model="modelForm.city"
       v-model:model-str="cityStr"
       v-model:show="show.city"
+      selected-model="name"
       :default-value="modelForm.city"
     ></tm-city-picker>
 
@@ -290,7 +277,7 @@
       :height="1000"
       v-model:show="show.biz_time_show"
     >
-      <tm-cell label="营业日">
+      <tm-cell label="营业日" :titleFontSize="32">
         <template v-slot:right>
           <tm-radio-group
             v-model="businessDayType"
@@ -323,7 +310,7 @@
           ></tm-checkbox>
         </tm-checkbox-group>
       </view>
-      <tm-cell label="营业时间">
+      <tm-cell label="营业时间" :titleFontSize="32">
         <template v-slot:right>
           <tm-radio-group v-model="businessTimeType" :defaultValue="businessTimeType">
             <tm-radio
@@ -364,30 +351,23 @@
           ><tm-text color="grey" label="重新选择"></tm-text
         ></view>
       </view>
-      <!-- <tm-cascader
-        ref="textCascader"
-        @cell-click="loadL2Area"
-        v-model="area"
-        v-model:model-str="areaStr"
-        :defaultValue="area"
-        :data="areaList"
-      ></tm-cascader> -->
     </tm-drawer>
   </tm-app>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed } from "vue";
 import tmCheckbox from "@/tmui/components/tm-checkbox/tm-checkbox.vue";
 import tmCheckboxGroup from "@/tmui/components/tm-checkbox-group/tm-checkbox-group.vue";
 import { language } from "@/tmui/tool/lib/language";
+import { useTmpiniaStore } from "@/tmui/tool/lib/tmpinia";
+
 import { useSubPage } from "./use-mark";
 const {
   show,
   tagList,
   categoryList,
   modelForm,
-  handleSelectCity,
   cityStr,
   dayList,
   dayList2,
@@ -404,14 +384,19 @@ const {
   openMap,
   confirm,
   success_show,
+  handleAnonyChange,
+  checked,
 } = useSubPage();
 function onStart() {}
 function completeFile() {}
-const dateStr = ref("");
-const dateSAva = ref("2016-4-2 15:00:00");
-const dateSar = ref("");
-const dateTime = ref("2014-6-15 15:00:00");
-const dateTimeStr = ref("");
-const showdate = ref(false);
-const modelvalue = ref("2024-3-20");
+// const store = useTmpiniaStore();
+
+// const tmcfg = computed(() => store.tmStore);
+
+//是否暗黑模式。
+// const isDark = computed(() => computedDark(props, tmcfg.value));
+// const tmcomputed = computed(() => {
+//   const _props = { ...props, color: _color.value };
+//   return computedTheme(_props, isDark.value, tmcfg.value);
+// });
 </script>

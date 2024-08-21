@@ -1,6 +1,6 @@
 <template>
   <tm-app>
-    <tm-navbar title="探索" hide-home hide-back> </tm-navbar>
+    <tm-navbar title="发现" hide-home hide-back> </tm-navbar>
     <view
       class="flex flex-col flex-col-center-center"
       :style="`height:${sysinfo.height - 100}px`"

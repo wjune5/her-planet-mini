@@ -1,67 +1,28 @@
 <template>
   <tm-app>
     <view class="page">
-      <view
-        v-if="pageStatus[0]"
-        class="page__container"
-        :style="pageContainerStyle(0)"
-      >
-        <scroll-view
-          class="scroll-view"
-          scroll-y
-          @scroll="scrollViewScrollHandle"
+      <view v-if="pageStatus[0]" class="page__container" :style="pageContainerStyle(0)">
+        <scroll-view class="scroll-view" scroll-y @scroll="scrollViewScrollHandle"
           ><Home placeholderBottom />
         </scroll-view>
       </view>
-      <view
-        v-if="pageStatus[1]"
-        class="page__container"
-        :style="pageContainerStyle(1)"
-      >
-        <scroll-view
-          class="scroll-view"
-          scroll-y
-          @scroll="scrollViewScrollHandle"
-        >
+      <view v-if="pageStatus[1]" class="page__container" :style="pageContainerStyle(1)">
+        <scroll-view class="scroll-view" scroll-y @scroll="scrollViewScrollHandle">
           <Square placeholderBottom />
         </scroll-view>
       </view>
-      <view
-        v-if="pageStatus[2]"
-        class="page__container"
-        :style="pageContainerStyle(2)"
-      >
-        <scroll-view
-          class="scroll-view"
-          scroll-y
-          @scroll="scrollViewScrollHandle"
-        >
+      <view v-if="pageStatus[2]" class="page__container" :style="pageContainerStyle(2)">
+        <scroll-view class="scroll-view" scroll-y @scroll="scrollViewScrollHandle">
           <Add placeholderBottom />
         </scroll-view>
       </view>
-      <view
-        v-if="pageStatus[3]"
-        class="page__container"
-        :style="pageContainerStyle(3)"
-      >
-        <scroll-view
-          class="scroll-view"
-          scroll-y
-          @scroll="scrollViewScrollHandle"
-        >
+      <view v-if="pageStatus[3]" class="page__container" :style="pageContainerStyle(3)">
+        <scroll-view class="scroll-view" scroll-y @scroll="scrollViewScrollHandle">
           <Messages placeholderBottom />
         </scroll-view>
       </view>
-      <view
-        v-if="pageStatus[4]"
-        class="page__container"
-        :style="pageContainerStyle(4)"
-      >
-        <scroll-view
-          class="scroll-view"
-          scroll-y
-          @scroll="scrollViewScrollHandle"
-        >
+      <view v-if="pageStatus[4]" class="page__container" :style="pageContainerStyle(4)">
+        <scroll-view class="scroll-view" scroll-y @scroll="scrollViewScrollHandle">
           <Accounts placeholderBottom />
         </scroll-view>
       </view>
@@ -76,8 +37,8 @@
       <tm-tabbar-item
         v-for="(item, index) in tabbarData"
         :key="index"
-        :btn-top="index==2"
-        :icon-size="index!=2?48:120"
+        :btn-top="index == 2"
+        :icon-size="index != 2 ? 48 : 120"
         :text="item.text"
         :icon="item.icon"
         :unicon="item.unicon"
@@ -118,7 +79,7 @@ const {
 } = useOrderedChildren<IndexSubPageContext>();
 const store = useTmpiniaStore();
 
-store.setTmVuetifyTheme("green")
+store.setTmVuetifyTheme("green");
 
 // 导航栏数据
 const tabbarData: TabbarData = [
@@ -128,16 +89,16 @@ const tabbarData: TabbarData = [
     icon: "/static/tabbar/icon-24-ditu-se2x.png",
   },
   {
-    text: "探索",
+    text: "发现",
     unicon: "/static/tabbar/icon-24-tansuo-unsel2x.png",
     icon: "/static/tabbar/icon-24-tansuo-sel2x.png",
   },
   {
-    text: '',
-    icon: "/static/tabbar/Group314-2x.png"
+    text: "",
+    icon: "/static/tabbar/Group314-2x.png",
   },
   {
-    text: "信息",
+    text: "收藏",
     unicon: "/static/tabbar/icon-24-xinxi-unsel2x.png",
     icon: "/static/tabbar/icon-24-xinxi-sel2x.png",
   },

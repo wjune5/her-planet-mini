@@ -43,7 +43,8 @@ export const useSubPage = () => {
 		other: '',
 		description: '',
 		businessTime: '',
-		fileList: []
+		fileList: [],
+		anonymous: false
 	});
 	// === business time BEGIN ===
 
@@ -93,11 +94,14 @@ export const useSubPage = () => {
 	const confirm_value = ref(false);
 	function handleBusinessDayTypeChange(e: any) {
 		console.log(e)
+		console.log(modelForm.value)
 	}
 	// === business time END ===
 
 	const success_show = ref(false);
 	const confirm = (e) => {
+		console.log(e)
+		console.log(modelForm.value)
 		success_show.value = true;
 
 		modelForm.value = {
@@ -112,9 +116,9 @@ export const useSubPage = () => {
 			other: '',
 			description: '',
 			businessTime: '',
-			fileList: []
+			fileList: [],
+			anonymous: false
 		};
-		console.log(e)
 	}
 	const cityStr = ref('');
 	const handleSelectCity = () => {
@@ -129,9 +133,10 @@ export const useSubPage = () => {
 					latitude: res.latitude,
 					longitude: res.longitude,
 					success: (res) => {
-						let addr=getAddress(res.address);
-						console.log(addr)
-						modelForm.value.address = res.address;
+						let addr = getAddress(res.address);
+						// console.log(addr)
+
+						modelForm.value.address = addr.groups.village;
 						modelForm.value.title = res.name;
 						//提取地址中的城市
 						modelForm.value.latitude = res.latitude;
@@ -149,11 +154,19 @@ export const useSubPage = () => {
 
 	}
 
-	function getAddress(val:string) {
+	function getAddress(val: string) {
 		// let reg = /.+?(省|市|自治区|自治州|县|区)/g;
-		let reg = /^(.*?省|.*?自治区)(.*?市)?(.*?区|.*?县)?(.*)/g;
-	    return !!val.match(reg);
+		// let reg = /^(.*?省|.*?自治区)(.*?市)?(.*?区|.*?县)?(.*)/g;
+		// return val.match(reg);
+		var regex = "(?<province>[^省]+省|[^自治区]+自治区|.+市)(?<city>[^自治州]+自治州|.+区划|[^市]+市|.+区)?(?<county>[^市]+市|[^县]+县|[^旗]+旗|.+区)?(?<town>[^区]+区|.+镇)?(?<village>.*)";
+		var address = val;
+		return address.match(regex);
 	}
+	function handleAnonyChange(e) {
+		// modelForm.value=e;
+		console.log(e)
+	}
+	const checked = ref(false);
 	return {
 		show,
 		modelForm,
@@ -175,6 +188,8 @@ export const useSubPage = () => {
 		openMap,
 		week,
 		confirm,
-		success_show
+		success_show,
+		handleAnonyChange,
+		checked
 	}
 }

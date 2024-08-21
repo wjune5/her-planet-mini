@@ -143,7 +143,7 @@ export const useSubPage = () => {
   const selectedCity = ref({ str: '', arr: [] });
   function handleCityPick() {
     selectedArea.value = selectedCity.value.arr[1];
-
+    console.log(selectedCity.value)
     qqmapsdk.geocoder({
       address: selectedCity.value.str, //地址参数，例：固定地址，address: '北京市海淀区彩和坊路海淀西大街74号'
       success: function (res) {
@@ -173,9 +173,6 @@ export const useSubPage = () => {
       },
       fail: function (error) {
         console.error(error);
-      },
-      complete: function (res) {
-        console.log(res);
       }
     })
 
@@ -207,12 +204,15 @@ export const useSubPage = () => {
                   if (result.confirm) {
                     uni.openSetting({
                       success(res) {
-
+                        getLoc();
                       }
                     }
                     )
                   }
                 },
+                fail(err) {
+                  // TODO 不授权
+                }
               })
             }
           });
@@ -230,6 +230,7 @@ export const useSubPage = () => {
             if (result.confirm) {
               uni.openSetting({
                 success(res) {
+                  getLoc();
 
                 }
               }
@@ -250,7 +251,6 @@ export const useSubPage = () => {
         curLocation.value.longitude = lres.longitude;
         getGeocoder(lres.latitude, lres.longitude);
         nextTick(() => {
-
           meLocation.value = selectedArea.value;
         })
       },
@@ -265,9 +265,10 @@ export const useSubPage = () => {
     qqmapsdk.reverseGeocoder({
       location: { latitude: latitude, longitude: longitude },
       fail: function (qqErr: any) {
-        console.log(qqErr)
+        // console.log(qqErr)
       },
       success: function (mapRes) {
+        // console.log(mapRes)
         let info = mapRes.result;
         // console.log(info)
         selectedArea.value = info.ad_info.city;
@@ -307,7 +308,7 @@ export const useSubPage = () => {
 
   const loading_show=ref(false);
   function handleRegionChange(e) {
-    if (e.type == 'end') {
+    if (e.type == 'end' && selectedCity.value.str!='') {
       loading_show.value=true;
       uni.createMapContext("map", instance).getCenterLocation({
         success(result) {

@@ -4,7 +4,7 @@ import { onLoad } from '@dcloudio/uni-app'
 import { useSubPageProvide } from '../../../index/handlers'
 
 import type { User } from '@/api/interfaces/user'
-import {GENDER_TYPE} from "@/api/constants/index";
+import { accountApi } from '@/api/api/account';
 
 export const useSubPage = () => {
   // 导航栏顶部的高度
@@ -61,7 +61,6 @@ export const useSubPage = () => {
   }
 
   const handleWxLogin = () => {
-    console.log('login')
     uni.login({
       provider: 'weixin',
       onlyAuthorize:true,
@@ -75,6 +74,7 @@ export const useSubPage = () => {
         //     // 登录后台
         //   }
         // })
+        accountApi.login({code:loginRes.code});
       },
       fail:function (err) {
         uni.$tm.u.toast('获取登录code失败，请稍后再试~');

@@ -129,8 +129,8 @@ export const useSubPage = () => {
 					latitude: res.latitude,
 					longitude: res.longitude,
 					success: (res) => {
-						modelForm.value.address = res.address;
-						modelForm.value.title = res.name;
+						let addr=getAddress(res.address);
+						modelForm.value.address = addr.groups.village;
 						modelForm.value.latitude = res.latitude;
 						modelForm.value.longitude = res.longitude;
 					},
@@ -143,6 +143,11 @@ export const useSubPage = () => {
 			},
 		})
 
+	}
+	function getAddress(val:string) {
+		var regex = "(?<province>[^省]+省|[^自治区]+自治区|.+市)(?<city>[^自治州]+自治州|.+区划|[^市]+市|.+区)?(?<county>[^市]+市|[^县]+县|[^旗]+旗|.+区)?(?<town>[^区]+区|.+镇)?(?<village>.*)";
+		var address = val;
+		return address.match(regex);
 	}
 	return {
 		show,

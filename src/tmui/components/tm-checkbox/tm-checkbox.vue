@@ -8,7 +8,7 @@
     ]"
   >
     <view
-      @click.stop="hanlerClick"
+      @click.stop="handlerClick"
       class=""
       :class="[
         (tmCheckedBoxDir == 'customCol' && props.custom) || tmCheckedBoxDir == 'row'
@@ -283,7 +283,7 @@ if (vailChecked()) {
   emits("update:modelValue", props.value);
 }
 
-async function hanlerClick() {
+async function handlerClick() {
   emits("click");
   if (_disabled.value) {
     return;
@@ -337,5 +337,5 @@ if (parent) {
   parent.pushKey(props.value);
 }
 
-defineExpose({ hanlerClick });
+defineExpose({ handlerClick });
 </script>

@@ -1,13 +1,13 @@
 <template>
   <tm-app color="#F5F5F5">
     <tm-navbar title="" transparent hide-home :is-place="false"> </tm-navbar>
-    <block v-if="!postData">
+    <view v-if="!postData" :style="`margin-top:${sysinfo.navigatorBar}px`">
       <tm-skeleton-line :height="500"></tm-skeleton-line>
       <tm-skeleton-line :height="500"></tm-skeleton-line>
       <view style="width: 300rpx">
         <tm-skeleton-line :height="50"></tm-skeleton-line>
       </view>
-    </block>
+    </view>
     <block v-else>
       <tm-carousel
         :autoplay="true"

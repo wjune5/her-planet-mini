@@ -185,7 +185,7 @@ const props = defineProps({
 	},
 	okColor: {
 		type: [String],
-		default: 'primary'
+		default: 'green'
 	},
 	//true时，确认按钮将出现加载状态。
 	okLoading: {

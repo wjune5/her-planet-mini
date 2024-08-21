@@ -25,18 +25,27 @@
       >
         <view class="flex flex-row flex-row-center-start" style="line-height: 40rpx">
           <view
-            class="flex flex-row flex-row-center-start pl-40 pr-24 py-22"
+            class="pl-40 pr-20 py-22"
             @click="city_show = !city_show"
+            style="width: 138rpx"
           >
-            <tm-text
-            v-if="!loading_show"
-              :label="selectedArea"
-              :font-size="28"
-              color="#3D3D3D"
-              _class="mr-24"
-            ></tm-text>
-            <tm-icon v-else spin :font-size="40" name="tmicon-redo"></tm-icon>
-            <tm-icon name="tmicon-angle-down" :font-size="24" color="#959494"></tm-icon>
+            <view v-if="!loading_show" class="flex flex-row flex-row-center-start">
+              <tm-text
+                :label="selectedArea"
+                :font-size="28"
+                color="#3D3D3D"
+                _class="mr-24"
+              ></tm-text>
+              <tm-icon name="tmicon-angle-down" :font-size="24" color="grey-1"></tm-icon>
+            </view>
+
+            <tm-icon
+              v-else
+              spin
+              :font-size="20"
+              color="grey-1"
+              name="tmicon-redo"
+            ></tm-icon>
           </view>
 
           <tm-icon
@@ -222,7 +231,7 @@ const {
   selectedCity,
   handleCityPick,
   locateMe,
-  loading_show
+  loading_show,
 } = useSubPage();
 
 const _widthRpx = computed(() => uni.$tm.u.torpx(sysinfo.width));

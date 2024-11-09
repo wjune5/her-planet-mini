@@ -385,7 +385,6 @@ const {
   confirm,
   success_show,
   handleAnonyChange,
-  checked,
 } = useSubPage();
 function onStart() {}
 function completeFile() {}

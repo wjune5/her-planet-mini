@@ -6,6 +6,7 @@ import { MAP_KEY } from '@/api/constants';
 import { SettingConfig, Area } from "@/api/constants/index.ts";
 import type { Category } from '@/api/interfaces/category'
 import { Post } from '@/api/interfaces/post'
+import { categoryApi } from '@/api/api/category-api';
 
 export const useSubPage = () => {
   const instance = getCurrentInstance()
@@ -181,7 +182,7 @@ export const useSubPage = () => {
   const city_show = ref(false);
 
   const onLoad: IndexPageOnLoadFunc = () => {
-
+    categoryApi.list();
     // mock();
   }
 

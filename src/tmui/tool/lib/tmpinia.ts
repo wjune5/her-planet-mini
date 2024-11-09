@@ -1,7 +1,7 @@
 import { defineStore} from 'pinia';
 import themeColor from '../theme/theme'
 import * as u from '../function/util'
-import type { tmVuetify,wxshareConfig,colorThemeType } from './interface'
+import type { tmVuetify,wxshareConfig,colorThemeType,userInfo } from './interface'
 let pdefault_cookies_color = u.getCookie('setTmVuetifyColor')||"";
 let pdefault_cookies_black = u.getCookie('setTmVuetifyBlack')
 let pdefault_cookies_local = u.getCookie('setTmVuetifyLocal')||'zh-Hans';
@@ -43,7 +43,16 @@ export const useTmpiniaStore = defineStore('tmpinia', {
 				//当前存储存的主题对象。
 				colorList: colorArray,
 				//当前的语言
-				local:pdefault_cookies_local
+				local:pdefault_cookies_local,
+				userInfo:{
+					token: '',
+					userId: '',
+					account: '',
+					name: '',
+					avatar:'',
+					description: '',
+					code:''
+				}
 			}
 		}
 	},
@@ -126,7 +135,36 @@ export const useTmpiniaStore = defineStore('tmpinia', {
 				...this.tmStore,
 				local: language
 			}
-		}
+		},
+		setUserLoginInfo(data:userInfo) {
+			this.tmStore={
+				...this.tmStore,
+				userInfo:{
+					token: data.token,
+					userId:data.id,
+					account:data.account,
+					name:data.name,
+					avatar: data.avatar,
+					description: data.workDescribe
+				}
+			}
+		  },
+		  setUserInvitationCode(data:string) {
+			this.tmStore.userInfo.code=data;
+		  },
+		  logout() {
+			this.tmStore={
+				...this.tmStore,
+				userInfo:{
+					token: '',
+					userId: '',
+					account: '',
+					name: '',
+					avatar:'',
+					description: '',
+				}
+			}
+		  },
 	},
 });
 

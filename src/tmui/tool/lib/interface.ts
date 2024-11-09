@@ -176,3 +176,12 @@ export interface fetchConfig {
     fail?:Function,
     complete?:Function
 }
+
+export interface userInfo {
+    token?:string,
+    userId?:string,
+    account?:string,
+    name?:string,
+    avatarId?:string,
+    workDescribe?:string
+}

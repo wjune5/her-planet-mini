@@ -1,7 +1,10 @@
 import { getCurrentInstance, onMounted, ref, computed } from 'vue'
-import type { Category, Tag } from '@/api/interfaces/category'
+import { onLoad } from '@dcloudio/uni-app'
+import type { Category,Tag  } from '@/api/interfaces/category'
 
 import * as dayjs from '@/tmui/tool/dayjs/esm/index'
+import { commonApi } from '@/api/api/common-api'
+import { API_Tag } from '@/api/constants/api-prefix'
 
 export const useSubPage = () => {
 	const instance = getCurrentInstance()
@@ -149,6 +152,17 @@ export const useSubPage = () => {
 		var address = val;
 		return address.match(regex);
 	}
+	async function getTagList() {
+		let res = await commonApi.page(API_Tag, tagModelForm.value);
+		tagList.value = res.data.records;
+	}	
+	const tagModelForm= ref({model:{}, extra: {}});
+	onLoad((opts: any) => {
+		try {
+			getTagList();
+		} catch (error) {}
+	})
+
 	return {
 		show,
 		modelForm,

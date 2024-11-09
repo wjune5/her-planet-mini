@@ -1,4 +1,11 @@
 import { fetchConfig,fetchConfigMethod } from './interface';
+import { useTmpiniaStore } from "@/tmui/tool/lib/tmpinia";
+import {encode} from '@/iui/lib/base64';
+import {
+    COOKIE_REFRESH_TOKEN_KEY,
+    COOKIE_TOKEN_KEY,
+    COOKIE_TOKEN_EXP_KEY,
+  } from "@/api/constants/cookie-const";
 let config:fetchConfig={
     url:"",
     data:{},
@@ -17,6 +24,7 @@ let config:fetchConfig={
 
 function request(cog:fetchConfig = config,complete?:Function,beforeRequest?:Function,afterRequest?:Function):Promise<UniApp.GeneralCallbackResult|UniApp.RequestSuccessCallbackResult>{
     let newConfig = {...config,...cog}
+    const store = useTmpiniaStore();
     return new Promise(async (resolve,reject)=>{
         if(typeof beforeRequest === 'function'){
             let opts = await beforeRequest(newConfig);
@@ -26,7 +34,7 @@ function request(cog:fetchConfig = config,complete?:Function,beforeRequest?:Func
             newConfig = {...newConfig,...opts};
         }
         uni.request({
-            url:newConfig.url||"",
+            url:"http://127.0.0.1:8760/x"+newConfig.url||"",
             data:newConfig.data,
             header:newConfig.header,
             method:newConfig.method,
@@ -39,6 +47,14 @@ function request(cog:fetchConfig = config,complete?:Function,beforeRequest?:Func
             async success(result) {
 				
 				if(result.statusCode !==newConfig?.statusCode){
+                    if(result.statusCode===401||result.data.code==401||result.data.code == 40001 || result.data.code == 40008) {
+                        store.logout();
+                        uni.$tm.u.delCookie(COOKIE_TOKEN_KEY);
+                        uni.$tm.u.delCookie(COOKIE_REFRESH_TOKEN_KEY);
+                        uni.$tm.u.delCookie(COOKIE_TOKEN_EXP_KEY);
+                        uni.redirectTo({url:'/pages/login/login'});
+                    }
+                    uni.$tm.u.toast(result.data.msg);
 					reject(result)
 					return;
 				}
@@ -57,7 +73,12 @@ function request(cog:fetchConfig = config,complete?:Function,beforeRequest?:Func
 					}
                     result = {...opts};
                 }
-                resolve(result)
+                if(result.data.code==0) {
+                    resolve(result.data);
+                } else {
+                    uni.$tm.u.toast(result.data.msg);
+                    reject(result);
+                }
             },
             fail(result) {
                 reject(result)
@@ -70,7 +91,29 @@ function request(cog:fetchConfig = config,complete?:Function,beforeRequest?:Func
         })
     })
 }
-var beforeRequest:Function = (val:fetchConfig)=>val;
+const CLIENT_HEADER = 'Authorization';
+const TOKEN_HEADER = 'token';
+var beforeRequest:Function = (val:fetchConfig)=>{
+    // 在发送请求之前消息头加入token token
+    const token = uni.$tm.u.getCookie(TOKEN_HEADER);
+    if (token) {
+      config.header[TOKEN_HEADER] = 'Bearer ' + token;
+    } else {
+      delete config.header[TOKEN_HEADER];
+    }
+    const clientId = 'up_mini';
+    const clientSecret = 'up_mini_secret';
+    // #ifdef MP-WEIXIN
+    config.header[CLIENT_HEADER] = `Bearer ${encode(`${clientId}:${clientSecret}`)}`;
+    // #endif
+    // #ifndef MP-WEIXIN
+    config.header[CLIENT_HEADER] = `Bearer ${window.btoa(`${clientId}:${clientSecret}`)}`;
+    // #endif
+    // 当前请求地址#号后的路径，需要用户后台判断该页面的数据权限
+
+    // config.headers[PATH_HEADER] = (router && router.history && router.history.current) ? router.history.current.fullPath : '';
+    return config;
+};
 var afterRequest:Function = (val:fetchConfig)=>val;
 export class fetchNet {
 

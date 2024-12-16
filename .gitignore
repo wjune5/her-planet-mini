@@ -6,4 +6,5 @@
 /dist/
 /.hbuilderx/
 /*-lock.*
+/*.lock
 /stats.html

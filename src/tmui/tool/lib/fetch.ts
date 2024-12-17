@@ -1,6 +1,5 @@
 import { fetchConfig,fetchConfigMethod } from './interface';
 import { useTmpiniaStore } from "@/tmui/tool/lib/tmpinia";
-import {encode} from '@/iui/lib/base64';
 import {
     COOKIE_REFRESH_TOKEN_KEY,
     COOKIE_TOKEN_KEY,
@@ -101,13 +100,13 @@ var beforeRequest:Function = (val:fetchConfig)=>{
     } else {
       delete config.header[TOKEN_HEADER];
     }
-    const clientId = 'up_mini';
-    const clientSecret = 'up_mini_secret';
+    // const clientId = 'up_mini';
+    // const clientSecret = 'up_mini_secret';
     // #ifdef MP-WEIXIN
-    config.header[CLIENT_HEADER] = `Bearer ${encode(`${clientId}:${clientSecret}`)}`;
+    // config.header[CLIENT_HEADER] = `${encode(`${clientId}:${clientSecret}`)}`;
     // #endif
     // #ifndef MP-WEIXIN
-    config.header[CLIENT_HEADER] = `Bearer ${window.btoa(`${clientId}:${clientSecret}`)}`;
+    // config.header[CLIENT_HEADER] = `${window.btoa(`${clientId}:${clientSecret}`)}`;
     // #endif
     // 当前请求地址#号后的路径，需要用户后台判断该页面的数据权限
 

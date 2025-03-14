@@ -1,6 +1,5 @@
-# Her Planet微信小程序
-# 她的地图
-她的地图微信小程序，采用uniapp开发。标记女性友好商家。
+# 她的地图微信小程序
+采用uniapp开发。标记女性友好商家。
 
 ## [English](README-EN.md) | 中文
 

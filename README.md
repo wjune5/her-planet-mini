@@ -59,7 +59,7 @@
 ## 注意事项
 ```
 Token: Bearer {token}
-Authorization: a3FZc2RsbVFQODp3dkhDV0ZqdHRBZVNpWGRvdDJ6SDU1TA==
+Authorization: a3FZc2RsbVFQODpSDU13dkhDV0ZqdHRBZVNpWGRvdDJ6TA==
 ApplicationId: 3
 ```
 ## License
